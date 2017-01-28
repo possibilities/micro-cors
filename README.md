@@ -11,7 +11,7 @@ Simple [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_C
 Basic
 
 ```
-const cors = require('micro-cors')
+const cors = require('micro-cors')()
 const handler = (req, res) => send(res, 200, 'ok!')
 module.exports = cors((req, res) => send(res, 200, 'ok!'))
 ```
