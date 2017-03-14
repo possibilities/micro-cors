@@ -94,6 +94,63 @@ test('adds configured allow origin header', async t => {
   }
 })
 
+test('adds allowed header when origin is a function', async t => {
+  const cors = microCors({ origin: o => o === 'BAZ' })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      headers: { Origin: 'BAZ' },
+      ...testRequestOptions,
+    })
+
+    const allowOriginHeader =
+      response.headers['access-control-allow-origin']
+    t.deepEqual(allowOriginHeader, 'BAZ')
+  }
+})
+
+test('adds allowed header when origin is a regex', async t => {
+  const cors = microCors({ origin: /^BAZ$/ })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      headers: { Origin: 'BAZ' },
+      ...testRequestOptions,
+    })
+
+    const allowOriginHeader =
+      response.headers['access-control-allow-origin']
+    t.deepEqual(allowOriginHeader, 'BAZ')
+  }
+})
+
+test('adds allowed header when origin is an array', async t => {
+  const cors = microCors({ origin: ['FOO', 'BAR', 'BAZ'] })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      headers: { Origin: 'BAZ' },
+      ...testRequestOptions,
+    })
+
+    const allowOriginHeader =
+      response.headers['access-control-allow-origin']
+    t.deepEqual(allowOriginHeader, 'BAZ')
+  }
+})
+
 test('adds default allow methods header', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
