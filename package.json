@@ -19,7 +19,7 @@
     "async-to-gen": "1.3.0",
     "ava": "0.17.0",
     "babel-polyfill": "6.20.0",
-    "micro": "6.2.0",
+    "micro": "7.2.1",
     "request-promise": "4.1.1",
     "test-listen": "1.0.0"
   }
