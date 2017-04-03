@@ -12,15 +12,38 @@
   "author": "Mike Bannister <mikebannister@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "ava --fail-fast --verbose",
-    "test:watch": "npm test -- --watch"
+    "build": "rimraf lib && babel src --out-dir lib",
+    "test": "ava --verbose src/test.js",
+    "dev": "ava --verbose --watch src/test.js"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0"
   },
   "devDependencies": {
     "async-to-gen": "^1.3.2",
     "ava": "^0.18.2",
+    "babel-cli": "^6.24.0",
     "babel-polyfill": "^6.23.0",
-    "micro": "^7.2.2",
-    "request-promise": "^4.2.0",
+    "babel-preset-latest": "^6.24.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-register": "^6.24.0",
+    "micro": "^7.3.0",
+    "rimraf": "^2.6.1",
     "test-listen": "^1.0.1"
+  },
+  "ava": {
+    "failFast": true,
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  },
+  "babel": {
+    "presets": [
+      "latest",
+      "stage-0"
+    ]
   }
 }
