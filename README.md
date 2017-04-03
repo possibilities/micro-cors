@@ -6,6 +6,12 @@ Simple [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_C
 
 [![CircleCI](https://circleci.com/gh/possibilities/micro-cors.svg?style=svg)](https://circleci.com/gh/possibilities/micro-cors)
 
+### Install
+
+```
+yarn add micro-api
+```
+
 ### Usage
 
 Basic

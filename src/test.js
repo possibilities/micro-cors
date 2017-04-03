@@ -1,12 +1,11 @@
-import 'async-to-gen/register'
-import 'babel-polyfill'
-
 import test from 'ava'
 import listen from 'test-listen'
 
 import microCors from './index'
 import micro, { send } from 'micro'
 import request from 'request-promise'
+
+import 'babel-polyfill'
 
 const testRequestOptions = {
   json: true,
