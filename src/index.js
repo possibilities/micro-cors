@@ -3,7 +3,7 @@ const DEFAULT_ALLOW_METHODS = [
   'GET',
   'PUT',
   'DELETE',
-  'OPTIONS',
+  'OPTIONS'
 ]
 
 const DEFAULT_ALLOW_HEADERS = [
@@ -12,7 +12,7 @@ const DEFAULT_ALLOW_HEADERS = [
   'X-HTTP-Method-Override',
   'Content-Type',
   'Authorization',
-  'Accept',
+  'Accept'
 ]
 
 const DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 // 24 hours
@@ -22,7 +22,7 @@ const cors = options => handler => (req, res) => {
     maxAge,
     origin,
     allowHeaders,
-    allowMethods,
+    allowMethods
   } = (options || {})
 
   res.setHeader(

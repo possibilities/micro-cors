@@ -2,7 +2,7 @@ import test from 'ava'
 import listen from 'test-listen'
 
 import microCors from './index'
-import micro, { send } from 'micro'
+import micro from 'micro'
 import request from 'request-promise'
 
 import 'babel-polyfill'
@@ -12,7 +12,7 @@ const testRequestOptions = {
   // Otherwise request-promise just gives the body
   resolveWithFullResponse: true,
   // Don't reject messages that come back with error code (e.g. 404, 500s)
-  simple: false,
+  simple: false
 }
 
 const methods = [
@@ -20,7 +20,7 @@ const methods = [
   'GET',
   'PUT',
   'DELETE',
-  'OPTIONS',
+  'OPTIONS'
 ]
 
 test('adds default max age header', async t => {
@@ -32,7 +32,7 @@ test('adds default max age header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const maxAgeHeader = response.headers['access-control-max-age']
@@ -49,7 +49,7 @@ test('adds configured max age header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const maxAgeHeader = response.headers['access-control-max-age']
@@ -66,7 +66,7 @@ test('adds default allow origin header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const allowOriginHeader =
@@ -84,7 +84,7 @@ test('adds configured allow origin header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const allowOriginHeader =
@@ -102,7 +102,7 @@ test('adds default allow methods header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const allowMethodsHeader = response.headers['access-control-allow-methods']
@@ -119,7 +119,7 @@ test('adds configured allow methods header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const allowMethodsHeader = response.headers['access-control-allow-methods']
@@ -136,7 +136,7 @@ test('adds default allow headers header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const allowMethodsHeader = response.headers['access-control-allow-headers']
@@ -156,7 +156,7 @@ test('adds configured allow headers header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const allowMethodsHeader = response.headers['access-control-allow-headers']
@@ -176,7 +176,7 @@ test('adds allow credentials header', async t => {
     const response = await request({
       url,
       method,
-      ...testRequestOptions,
+      ...testRequestOptions
     })
 
     const allowCredentialsHeader =
@@ -194,7 +194,7 @@ test('responds to OPTIONS requests', async t => {
   const response = await request({
     url,
     method,
-    ...testRequestOptions,
+    ...testRequestOptions
   })
 
   t.deepEqual(200, response.statusCode)
