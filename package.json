@@ -37,7 +37,7 @@
     "babel-register": "^6.24.0",
     "micro": "^7.3.0",
     "rimraf": "^2.6.1",
-    "standard": "^9.0.2",
+    "standard": "^10.0.0",
     "test-listen": "^1.0.1"
   },
   "ava": {
