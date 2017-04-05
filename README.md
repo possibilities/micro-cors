@@ -9,7 +9,7 @@ Simple [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_C
 ### Install
 
 ```
-yarn add micro-api
+yarn add micro-cors
 ```
 
 ### Usage
