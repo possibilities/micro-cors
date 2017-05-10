@@ -201,4 +201,3 @@ test('responds to OPTIONS requests', async t => {
   t.deepEqual(200, response.statusCode)
   t.deepEqual({}, response.body)
 })
-
