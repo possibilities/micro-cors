@@ -19,6 +19,7 @@ const methods = [
   'POST',
   'GET',
   'PUT',
+  'PATCH',
   'DELETE',
   'OPTIONS'
 ]
@@ -106,7 +107,7 @@ test('adds default allow methods header', async t => {
     })
 
     const allowMethodsHeader = response.headers['access-control-allow-methods']
-    t.deepEqual(allowMethodsHeader, 'POST,GET,PUT,DELETE,OPTIONS')
+    t.deepEqual(allowMethodsHeader, 'POST,GET,PUT,PATCH,DELETE,OPTIONS')
   }
 })
 
@@ -200,3 +201,4 @@ test('responds to OPTIONS requests', async t => {
   t.deepEqual(200, response.statusCode)
   t.deepEqual({}, response.body)
 })
+
