@@ -1,3 +1,11 @@
 machine:
+  environment:
+    PATH: "${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin"
   node:
-    version: 6.9
+    version: 6
+dependencies:
+  override:
+    - yarn install
+test:
+  override:
+    - yarn test
