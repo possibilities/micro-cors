@@ -19,6 +19,7 @@ const methods = [
   'POST',
   'GET',
   'PUT',
+  'PATCH',
   'DELETE',
   'OPTIONS'
 ]
