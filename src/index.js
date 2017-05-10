@@ -2,6 +2,7 @@ const DEFAULT_ALLOW_METHODS = [
   'POST',
   'GET',
   'PUT',
+  'PATCH',
   'DELETE',
   'OPTIONS'
 ]
