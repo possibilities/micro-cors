@@ -48,10 +48,6 @@ const cors = options => handler => (req, res) => {
 
   res.setHeader('Access-Control-Allow-Credentials', 'true')
 
-  if (req.method === 'OPTIONS') {
-    return {}
-  }
-
   return handler(req, res)
 }
 
