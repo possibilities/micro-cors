@@ -18,7 +18,7 @@ const DEFAULT_ALLOW_HEADERS = [
 
 const DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 // 24 hours
 
-const cors = options => handler => (req, res) => {
+const cors = options => handler => (req, res, ...restArgs) => {
   const {
     maxAge,
     origin,
@@ -52,7 +52,7 @@ const cors = options => handler => (req, res) => {
     return {}
   }
 
-  return handler(req, res)
+  return handler(req, res, ...restArgs)
 }
 
 module.exports = cors
