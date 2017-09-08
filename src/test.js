@@ -168,6 +168,26 @@ test('adds configured allow headers header', async t => {
   }
 })
 
+test('allows configured expose headers header', async t => {
+  const cors = microCors({ exposeHeaders: ['BAR'] })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    const exposeMethodsHeader = response.headers['access-control-expose-headers']
+    t.deepEqual(
+      exposeMethodsHeader,
+      'BAR'
+    )
+  }
+})
+
 test('adds allow credentials header', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
