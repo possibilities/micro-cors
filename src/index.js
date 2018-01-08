@@ -23,6 +23,7 @@ const cors = options => handler => (req, res, ...restArgs) => {
     maxAge,
     origin,
     allowHeaders,
+    exposeHeaders,
     allowMethods
   } = (options || {})
 
@@ -46,11 +47,14 @@ const cors = options => handler => (req, res, ...restArgs) => {
     (allowHeaders || DEFAULT_ALLOW_HEADERS).join(',')
   )
 
-  res.setHeader('Access-Control-Allow-Credentials', 'true')
-
-  if (req.method === 'OPTIONS') {
-    return {}
+  if (exposeHeaders && exposeHeaders.length) {
+    res.setHeader(
+      'Access-Control-Expose-Headers',
+      exposeHeaders.join(',')
+    )
   }
+
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
 
   return handler(req, res, ...restArgs)
 }
