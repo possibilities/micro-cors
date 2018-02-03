@@ -4,7 +4,7 @@ const DEFAULT_ALLOW_METHODS = [
   'PUT',
   'PATCH',
   'DELETE',
-  'OPTIONS'
+  'OPTIONS',
 ]
 
 const DEFAULT_ALLOW_HEADERS = [
@@ -13,49 +13,40 @@ const DEFAULT_ALLOW_HEADERS = [
   'X-HTTP-Method-Override',
   'Content-Type',
   'Authorization',
-  'Accept'
+  'Accept',
 ]
 
 const DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 // 24 hours
 
 const cors = options => handler => (req, res, ...restArgs) => {
-  const {
-    maxAge,
-    origin,
-    allowHeaders,
-    exposeHeaders,
-    allowMethods
-  } = (options || {})
+  const { maxAge, origin, allowHeaders, exposeHeaders, allowMethods } =
+    options || {}
 
-  res.setHeader(
-    'Access-Control-Max-Age',
-    '' + (maxAge || DEFAULT_MAX_AGE_SECONDS)
-  )
+  const preFlight = req.method === 'OPTIONS'
 
-  res.setHeader(
-    'Access-Control-Allow-Origin',
-    (origin || '*')
-  )
-
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    (allowMethods || DEFAULT_ALLOW_METHODS).join(',')
-  )
-
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    (allowHeaders || DEFAULT_ALLOW_HEADERS).join(',')
-  )
-
-  if (exposeHeaders && exposeHeaders.length) {
-    res.setHeader(
-      'Access-Control-Expose-Headers',
-      exposeHeaders.join(',')
-    )
-  }
-
+  res.setHeader('Access-Control-Allow-Origin', origin || '*')
   res.setHeader('Access-Control-Allow-Credentials', 'true')
 
+  if (preFlight) {
+    res.setHeader(
+      'Access-Control-Max-Age',
+      '' + (maxAge || DEFAULT_MAX_AGE_SECONDS)
+    )
+
+    res.setHeader(
+      'Access-Control-Allow-Methods',
+      (allowMethods || DEFAULT_ALLOW_METHODS).join(',')
+    )
+
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      (allowHeaders || DEFAULT_ALLOW_HEADERS).join(',')
+    )
+
+    if (exposeHeaders && exposeHeaders.length) {
+      res.setHeader('Access-Control-Expose-Headers', exposeHeaders.join(','))
+    }
+  }
   return handler(req, res, ...restArgs)
 }
 
