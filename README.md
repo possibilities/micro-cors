@@ -17,7 +17,6 @@ yarn add micro-cors
 Basic
 
 ```js
-const { send } = require('micro')
 const cors = require('micro-cors')()
 const handler = (req, res) => send(res, 200, 'ok!')
 
@@ -27,7 +26,6 @@ module.exports = cors(handler)
 With options
 
 ```js
-const { send } = require('micro')
 const microCors = require('micro-cors')
 const cors = microCors({ allowMethods: ['PUT', 'POST'] })
 const handler = (req, res) => send(res, 200, 'ok!')
@@ -37,22 +35,22 @@ module.exports = cors(handler)
 
 #### Options
 
-##### `allowMethods` &lt;String>
+##### `allowMethods`
 
-default: `'POST,GET,PUT,PATCH,DELETE,OPTIONS'`
+default: `['POST','GET','PUT','DELETE','OPTIONS']`
 
-##### `allowHeaders` &lt;String>
+##### `allowHeaders`
 
-default: `'X-Requested-With,Access-Control-Allow-Origin,X-HTTP-Method-Override,Content-Type,Authorization,Accept'`
+default: `['X-Requested-With','Access-Control-Allow-Origin','X-HTTP-Method-Override','Content-Type','Authorization','Accept']`
 
-##### `exposeHeaders` &lt;String>
+##### `exposeHeaders`
 
-default: `undefined`
+default: `[]`
 
-##### `maxAge` &lt;String>
+##### `maxAge`
 
 default: `86400`
 
-##### `origin` &lt;String>
+##### `origin`
 
 default: `*`
