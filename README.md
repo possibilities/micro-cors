@@ -37,7 +37,7 @@ module.exports = cors(handler)
 
 ##### `allowMethods`
 
-default: `['POST','GET','PUT','DELETE','OPTIONS']`
+default: `['POST','GET','PUT','PATCH','DELETE','OPTIONS']`
 
 ##### `allowHeaders`
 
