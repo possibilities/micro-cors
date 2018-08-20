@@ -17,7 +17,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib",
-    "test": "ava --verbose src/test.js",
+    "test": "yarn lint && ava --verbose src/test.js",
     "dev": "ava --verbose --watch src/test.js",
     "prepublish": "yarn build",
     "lint": "standard",
