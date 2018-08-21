@@ -1,5 +1,3 @@
-const DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 // 24 hours
-
 const DEFAULT_ALLOW_METHODS = [
   'POST',
   'GET',
@@ -18,22 +16,24 @@ const DEFAULT_ALLOW_HEADERS = [
   'Accept'
 ]
 
+const DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 // 24 hours
+
 const cors = options => handler => (req, res, ...restArgs) => {
   const {
     origin = '*',
     maxAge = DEFAULT_MAX_AGE_SECONDS,
     allowMethods = DEFAULT_ALLOW_METHODS,
     allowHeaders = DEFAULT_ALLOW_HEADERS,
-    exposeHeaders
+    exposeHeaders = []
   } = (options || {})
 
   res.setHeader('Access-Control-Allow-Credentials', 'true')
-  res.setHeader('Access-Control-Max-Age', maxAge)
+  res.setHeader('Access-Control-Max-Age', String(maxAge))
   res.setHeader('Access-Control-Allow-Origin', origin)
   res.setHeader('Access-Control-Allow-Methods', allowMethods.join(','))
   res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(','))
 
-  if (exposeHeaders instanceof Array) {
+  if (exposeHeaders.length) {
     res.setHeader('Access-Control-Expose-Headers', exposeHeaders.join(','))
   }
 
