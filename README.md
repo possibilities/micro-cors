@@ -43,6 +43,10 @@ default: `['POST','GET','PUT','PATCH','DELETE','OPTIONS']`
 
 default: `['X-Requested-With','Access-Control-Allow-Origin','X-HTTP-Method-Override','Content-Type','Authorization','Accept']`
 
+##### `allowCredentials`
+
+default: `true`
+
 ##### `exposeHeaders`
 
 default: `[]`
