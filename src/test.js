@@ -38,7 +38,7 @@ test('adds default max age header only for OPTIONS request', async t => {
 
     if (method === 'OPTIONS') {
       const maxAgeHeader = response.headers['access-control-max-age']
-      t.deepEqual(maxAgeHeader, '86400')
+      t.is(maxAgeHeader, '86400')
     } else {
       t.false(Object.keys(response.headers).includes('access-control-max-age'))
     }
@@ -57,7 +57,7 @@ test('adds configured max age header', async t => {
   })
 
   const maxAgeHeader = response.headers['access-control-max-age']
-  t.deepEqual(maxAgeHeader, 'foo')
+  t.is(maxAgeHeader, 'foo')
 })
 
 test('adds default allow origin header', async t => {
@@ -72,9 +72,8 @@ test('adds default allow origin header', async t => {
       ...testRequestOptions
     })
 
-    const allowOriginHeader =
-      response.headers['access-control-allow-origin']
-    t.deepEqual(allowOriginHeader, '*')
+    const allowOriginHeader = response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, '*')
   }
 })
 
@@ -90,9 +89,8 @@ test('adds configured allow origin header', async t => {
       ...testRequestOptions
     })
 
-    const allowOriginHeader =
-      response.headers['access-control-allow-origin']
-    t.deepEqual(allowOriginHeader, 'BAZ')
+    const allowOriginHeader = response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, 'BAZ')
   }
 })
 
@@ -110,7 +108,7 @@ test('adds default allow methods header only for OPTIONS request', async t => {
 
     if (method === 'OPTIONS') {
       const allowMethodsHeader = response.headers['access-control-allow-methods']
-      t.deepEqual(allowMethodsHeader, 'POST,GET,PUT,PATCH,DELETE,OPTIONS')
+      t.is(allowMethodsHeader, 'POST,GET,PUT,PATCH,DELETE,OPTIONS')
     } else {
       t.false(Object.keys(response.headers).includes('access-control-allow-methods'))
     }
@@ -129,7 +127,7 @@ test('adds configured allow methods header', async t => {
   })
 
   const allowMethodsHeader = response.headers['access-control-allow-methods']
-  t.deepEqual(allowMethodsHeader, 'FOO')
+  t.is(allowMethodsHeader, 'FOO')
 })
 
 test('adds default allow headers header only for OPTIONS request', async t => {
@@ -146,7 +144,7 @@ test('adds default allow headers header only for OPTIONS request', async t => {
 
     if (method === 'OPTIONS') {
       const allowMethodsHeader = response.headers['access-control-allow-headers']
-      t.deepEqual(
+      t.is(
         allowMethodsHeader,
         'X-Requested-With,Access-Control-Allow-Origin,X-HTTP-Method-Override,Content-Type,Authorization,Accept'
       )
@@ -168,10 +166,7 @@ test('adds configured allow headers header', async t => {
   })
 
   const allowMethodsHeader = response.headers['access-control-allow-headers']
-  t.deepEqual(
-    allowMethodsHeader,
-    'BAR'
-  )
+  t.is(allowMethodsHeader, 'BAR')
 })
 
 test('allows configured expose headers header', async t => {
@@ -187,10 +182,7 @@ test('allows configured expose headers header', async t => {
     })
 
     const exposeMethodsHeader = response.headers['access-control-expose-headers']
-    t.deepEqual(
-      exposeMethodsHeader,
-      'BAR'
-    )
+    t.is(exposeMethodsHeader, 'BAR')
   }
 })
 
@@ -206,9 +198,8 @@ test('adds allow credentials header by default', async t => {
       ...testRequestOptions
     })
 
-    const allowCredentialsHeader =
-      response.headers['access-control-allow-credentials']
-    t.deepEqual(allowCredentialsHeader, 'true')
+    const allowCredentialsHeader = response.headers['access-control-allow-credentials']
+    t.is(allowCredentialsHeader, 'true')
   }
 })
 
