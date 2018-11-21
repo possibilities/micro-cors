@@ -232,14 +232,31 @@ test('responds to OPTIONS requests', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
-  const method = 'OPTIONS'
 
   const response = await request({
     url,
-    method,
+    method: 'OPTIONS',
     ...testRequestOptions
   })
 
-  t.deepEqual(200, response.statusCode)
-  t.deepEqual({}, response.body)
+  t.is(response.statusCode, 200)
+  t.falsy(response.body)
+})
+
+test('doesn\'t call inner function at OPTIONS requests', async t => {
+  const cors = microCors()
+  let isInnerCalled = false
+  const router = micro(cors((req, res) => {
+    isInnerCalled = true
+    res.end()
+  }))
+  const url = await listen(router)
+
+  await request({
+    url,
+    method: 'OPTIONS',
+    ...testRequestOptions
+  })
+
+  t.false(isInnerCalled)
 })

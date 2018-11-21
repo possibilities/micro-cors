@@ -41,9 +41,11 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     res.setHeader('Access-Control-Allow-Methods', allowMethods.join(','))
     res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(','))
     res.setHeader('Access-Control-Max-Age', String(maxAge))
-  }
 
-  return handler(req, res, ...restArgs)
+    res.end()
+  } else {
+    return handler(req, res, ...restArgs)
+  }
 }
 
 module.exports = cors
