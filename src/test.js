@@ -231,11 +231,11 @@ test('responds to OPTIONS requests', async t => {
   })
 
   t.is(response.statusCode, 200)
-  t.falsy(response.body)
+  t.deepEqual(response.body, {})
 })
 
-test('doesn\'t call inner function at OPTIONS requests', async t => {
-  const cors = microCors()
+test('has configuration to prevent handler from running on OPTIONS request', async t => {
+  const cors = microCors({ runHandlerOnOptionsRequest: false })
   let isInnerCalled = false
   const router = micro(cors((req, res) => {
     isInnerCalled = true

@@ -25,7 +25,8 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     allowMethods = DEFAULT_ALLOW_METHODS,
     allowHeaders = DEFAULT_ALLOW_HEADERS,
     allowCredentials = true,
-    exposeHeaders = []
+    exposeHeaders = [],
+    runHandlerOnOptionsRequest = true
   } = options
 
   res.setHeader('Access-Control-Allow-Origin', origin)
@@ -41,7 +42,9 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     res.setHeader('Access-Control-Allow-Methods', allowMethods.join(','))
     res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(','))
     res.setHeader('Access-Control-Max-Age', String(maxAge))
+  }
 
+  if (preFlight && !runHandlerOnOptionsRequest) {
     res.end()
   } else {
     return handler(req, res, ...restArgs)
