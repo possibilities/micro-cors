@@ -17,11 +17,11 @@
   "license": "MIT",
   "scripts": {
     "build": "rimraf lib && babel src --out-dir lib",
-    "test": "yarn lint && ava --verbose src/test.js",
+    "test": "ava --verbose src/test.js",
     "dev": "ava --verbose --watch src/test.js",
     "prepublish": "yarn build",
     "lint": "standard",
-    "pretest": "standard"
+    "pretest": "yarn lint"
   },
   "devDependencies": {
     "async-to-gen": "^1.3.2",
