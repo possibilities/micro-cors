@@ -31,9 +31,9 @@ test('adds default max age header only for OPTIONS request', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     if (method === 'OPTIONS') {
@@ -51,9 +51,9 @@ test('adds configured max age header', async t => {
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   const maxAgeHeader = response.headers['access-control-max-age']
@@ -67,9 +67,9 @@ test('adds default allow origin header', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     const allowOriginHeader = response.headers['access-control-allow-origin']
@@ -84,9 +84,9 @@ test('adds configured allow origin header', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     const allowOriginHeader = response.headers['access-control-allow-origin']
@@ -101,9 +101,9 @@ test('adds default allow methods header only for OPTIONS request', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     if (method === 'OPTIONS') {
@@ -121,9 +121,9 @@ test('adds configured allow methods header', async t => {
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   const allowMethodsHeader = response.headers['access-control-allow-methods']
@@ -137,9 +137,9 @@ test('adds default allow headers header only for OPTIONS request', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     if (method === 'OPTIONS') {
@@ -160,9 +160,9 @@ test('adds configured allow headers header', async t => {
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   const allowMethodsHeader = response.headers['access-control-allow-headers']
@@ -176,9 +176,9 @@ test('allows configured expose headers header', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     const exposeMethodsHeader = response.headers['access-control-expose-headers']
@@ -193,9 +193,9 @@ test('adds allow credentials header by default', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     const allowCredentialsHeader = response.headers['access-control-allow-credentials']
@@ -210,9 +210,9 @@ test('allows remove allow credentials header', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     t.false(Object.keys(response.headers).includes('access-control-allow-credentials'))
@@ -225,9 +225,9 @@ test('responds to OPTIONS requests', async t => {
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   t.is(response.statusCode, 200)
@@ -244,9 +244,9 @@ test('has configuration to prevent handler from running on OPTIONS request', asy
   const url = await listen(router)
 
   await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   t.false(isInnerCalled)
