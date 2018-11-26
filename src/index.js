@@ -26,7 +26,7 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     allowHeaders = DEFAULT_ALLOW_HEADERS,
     allowCredentials = true,
     exposeHeaders = [],
-    runHandlerOnOptionsRequest = true
+    runHandlerOnOptionsRequest = false
   } = options
 
   res.setHeader('Access-Control-Allow-Origin', origin)

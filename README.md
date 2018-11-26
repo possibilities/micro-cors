@@ -63,4 +63,4 @@ default: `*`
 
 ##### `runHandlerOnOptionsRequest`
 
-default: `true`
+default: `false`
