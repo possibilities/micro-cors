@@ -24,7 +24,7 @@ const methods = [
   'OPTIONS'
 ]
 
-test('adds default max age header only for OPTIONS request', async t => {
+test('adds default "access-control-max-age" header only for OPTIONS request', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -45,7 +45,7 @@ test('adds default max age header only for OPTIONS request', async t => {
   }
 })
 
-test('adds configured max age header', async t => {
+test('adds configured "access-control-max-age" header', async t => {
   const cors = microCors({ maxAge: 'foo' })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -60,7 +60,7 @@ test('adds configured max age header', async t => {
   t.is(maxAgeHeader, 'foo')
 })
 
-test('adds default allow origin header', async t => {
+test('adds default "access-control-allow-origin" header', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -77,7 +77,7 @@ test('adds default allow origin header', async t => {
   }
 })
 
-test('adds configured allow origin header', async t => {
+test('adds configured "access-control-allow-origin" header', async t => {
   const cors = microCors({ origin: 'BAZ' })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -94,7 +94,7 @@ test('adds configured allow origin header', async t => {
   }
 })
 
-test('adds default allow methods header only for OPTIONS request', async t => {
+test('adds default "access-control-allow-methods" header only for OPTIONS request', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -115,7 +115,7 @@ test('adds default allow methods header only for OPTIONS request', async t => {
   }
 })
 
-test('adds configured allow methods header', async t => {
+test('adds configured "access-control-allow-methods" header', async t => {
   const cors = microCors({ allowMethods: ['FOO'] })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -130,7 +130,7 @@ test('adds configured allow methods header', async t => {
   t.is(allowMethodsHeader, 'FOO')
 })
 
-test('adds default allow headers header only for OPTIONS request', async t => {
+test('adds default "access-control-allow-headers" header only for OPTIONS request', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -154,7 +154,7 @@ test('adds default allow headers header only for OPTIONS request', async t => {
   }
 })
 
-test('adds configured allow headers header', async t => {
+test('adds configured "access-control-allow-headers" header', async t => {
   const cors = microCors({ allowHeaders: ['BAR'] })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -169,7 +169,7 @@ test('adds configured allow headers header', async t => {
   t.is(allowMethodsHeader, 'BAR')
 })
 
-test('allows configured expose headers header', async t => {
+test('allows configured "access-control-expose-headers" header', async t => {
   const cors = microCors({ exposeHeaders: ['BAR'] })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -186,7 +186,7 @@ test('allows configured expose headers header', async t => {
   }
 })
 
-test('adds allow credentials header by default', async t => {
+test('adds "access-control-allow-credentials" header by default', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -203,7 +203,7 @@ test('adds allow credentials header by default', async t => {
   }
 })
 
-test('allows remove allow credentials header', async t => {
+test('allows to remove "access-control-allow-credentials" header', async t => {
   const cors = microCors({ allowCredentials: false })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
