@@ -228,18 +228,39 @@ test('allows remove allow credentials header', async t => {
   }
 })
 
-test('responds to OPTIONS requests', async t => {
+test('responds to OPTIONS requests without running handler', async t => {
   const cors = microCors()
-  const router = micro(cors(() => ({})))
+  let isHandlerCalled = false
+  const router = micro(cors((req, res) => {
+    isHandlerCalled = true
+    res.end()
+  }))
   const url = await listen(router)
-  const method = 'OPTIONS'
 
   const response = await request({
     url,
-    method,
+    method: 'OPTIONS',
     ...testRequestOptions
   })
 
-  t.deepEqual(200, response.statusCode)
-  t.deepEqual({}, response.body)
+  t.is(response.statusCode, 200)
+  t.false(isHandlerCalled)
+})
+
+test('allows to run handler on OPTIONS request', async t => {
+  const cors = microCors({ runHandlerOnOptionsRequest: true })
+  let isHandlerCalled = false
+  const router = micro(cors((req, res) => {
+    isHandlerCalled = true
+    res.end()
+  }))
+  const url = await listen(router)
+
+  await request({
+    url,
+    method: 'OPTIONS',
+    ...testRequestOptions
+  })
+
+  t.true(isHandlerCalled)
 })

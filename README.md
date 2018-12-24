@@ -60,3 +60,7 @@ default: `86400`
 ##### `origin`
 
 default: `*`
+
+##### `runHandlerOnOptionsRequest`
+
+default: `false`
