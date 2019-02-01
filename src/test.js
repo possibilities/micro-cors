@@ -12,7 +12,10 @@ const testRequestOptions = {
   // Otherwise request-promise just gives the body
   resolveWithFullResponse: true,
   // Don't reject messages that come back with error code (e.g. 404, 500s)
-  simple: false
+  simple: false,
+  headers: {
+    origin: 'example.com'
+  }
 }
 
 const methods = [
