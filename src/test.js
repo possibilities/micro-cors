@@ -267,3 +267,211 @@ test('allows to run handler on OPTIONS request', async t => {
 
   t.true(isHandlerCalled)
 })
+
+test('matches request origin against regexp', async t => {
+  const cors = microCors({origin: /example\.com$/})
+  const router = micro(cors(() => ({
+
+  })))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    const allowOriginHeader =
+      response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, testRequestOptions.headers.origin)
+  }
+})
+
+test('matches request origin against array of origin checks', async t => {
+  const cors = microCors({
+    origin: [ /foo\.com$/, 'example.com' ]
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    const allowOriginHeader =
+      response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, 'example.com')
+    t.is(response.headers['vary'], 'Origin')
+  }
+})
+
+test('doesn\'t match request origin against array of invalid origin checks', async t => {
+  const cors = microCors({
+    origin: [ /foo\.com$/, 'bar.com' ]
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    const allowOriginHeader =
+      response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, undefined)
+    t.is(response.headers['vary'], 'Origin')
+  }
+})
+
+test('origin of false disables cors', async t => {
+  const cors = microCors({
+    origin: false,
+    maxAge: 'foo',
+    allowMethods: ['FOO'],
+    allowHeaders: ['BAR'],
+    allowCredentials: false
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    t.is(response.headers['access-control-allow-origin'], undefined)
+    t.is(response.headers['Access-Control-Allow-Methods'], undefined)
+    t.is(response.headers['Access-Control-Allow-Headers'], undefined)
+    t.is(response.headers['Access-Control-Allow-Credentials'], undefined)
+    t.is(response.headers['Access-Control-Max-Age'], undefined)
+  }
+})
+
+test('can override origin', async t => {
+  const cors = microCors({
+    origin: 'example.com'
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    t.is(response.headers['access-control-allow-origin'], testRequestOptions.headers.origin)
+  }
+})
+
+test('includes Vary header for specific origins', async t => {
+  const cors = microCors({
+    origin: 'example.com'
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    t.is(response.headers['vary'], 'Origin')
+  }
+})
+
+test('specifying true for origin reflects requesting origin', async t => {
+  const cors = microCors({
+    origin: true
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    t.is(response.headers['access-control-allow-origin'], testRequestOptions.headers.origin)
+  }
+})
+
+test('should allow origin when callback returns true', async t => {
+  const cors = microCors({
+    origin (origin, cb) {
+      cb(null, true)
+    }
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    const allowOriginHeader =
+      response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, testRequestOptions.headers.origin)
+  }
+})
+
+test('should not allow origin when callback returns false', async t => {
+  const cors = microCors({
+    origin (origin, cb) {
+      cb(null, false)
+    }
+  })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  const response = await request({
+    url,
+    method: 'GET',
+    ...testRequestOptions
+  })
+
+  t.is(response.headers['access-control-allow-origin'], undefined)
+  t.is(response.headers['Access-Control-Allow-Methods'], undefined)
+  t.is(response.headers['Access-Control-Allow-Headers'], undefined)
+  t.is(response.headers['Access-Control-Allow-Credentials'], undefined)
+  t.is(response.headers['Access-Control-Max-Age'], undefined)
+})
+
+test('should not allow origin when callback returns false', async t => {
+  const cors = microCors()
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  const response = await request({
+    url,
+    method: 'GET',
+    json: true,
+    // Otherwise request-promise just gives the body
+    resolveWithFullResponse: true,
+    // Don't reject messages that come back with error code (e.g. 404, 500s)
+    simple: false
+  })
+
+  t.is(response.headers['access-control-allow-origin'], undefined)
+  t.is(response.headers['Access-Control-Allow-Methods'], undefined)
+  t.is(response.headers['Access-Control-Allow-Headers'], undefined)
+  t.is(response.headers['Access-Control-Allow-Credentials'], undefined)
+  t.is(response.headers['Access-Control-Max-Age'], undefined)
+})
