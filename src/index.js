@@ -18,7 +18,28 @@ const DEFAULT_ALLOW_HEADERS = [
 
 const DEFAULT_MAX_AGE_SECONDS = 60 * 60 * 24 // 24 hours
 
-const cors = (options = {}) => handler => (req, res, ...restArgs) => {
+function isString (s) {
+  return typeof s === 'string' || s instanceof String
+}
+
+function isOriginAllowed (origin, allowedOrigin) {
+  if (Array.isArray(allowedOrigin)) {
+    for (var i = 0; i < allowedOrigin.length; ++i) {
+      if (isOriginAllowed(origin, allowedOrigin[i])) {
+        return true
+      }
+    }
+    return false
+  } else if (isString(allowedOrigin)) {
+    return origin === allowedOrigin
+  } else if (allowedOrigin instanceof RegExp) {
+    return allowedOrigin.test(origin)
+  } else {
+    return !!allowedOrigin
+  }
+}
+
+const cors = (options = {}) => handler => async (req, res, ...restArgs) => {
   const {
     origin = '*',
     maxAge = DEFAULT_MAX_AGE_SECONDS,
@@ -29,26 +50,63 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     runHandlerOnOptionsRequest = false
   } = options
 
-  res.setHeader('Access-Control-Allow-Origin', origin)
-  if (allowCredentials) {
-    res.setHeader('Access-Control-Allow-Credentials', 'true')
-  }
-  if (exposeHeaders.length) {
-    res.setHeader('Access-Control-Expose-Headers', exposeHeaders.join(','))
-  }
+  const requestOrigin = req.headers.origin
 
-  const preFlight = req.method === 'OPTIONS'
-  if (preFlight) {
-    res.setHeader('Access-Control-Allow-Methods', allowMethods.join(','))
-    res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(','))
-    res.setHeader('Access-Control-Max-Age', String(maxAge))
-  }
-
-  if (preFlight && !runHandlerOnOptionsRequest) {
-    res.end()
-  } else {
+  if (!requestOrigin) {
     return handler(req, res, ...restArgs)
   }
+
+  let originCallback = null
+  if (origin && typeof origin === 'function') {
+    originCallback = origin
+  } else if (origin) {
+    originCallback = (requestOrigin, callback) => {
+      callback(null, origin)
+    }
+  }
+
+  if (originCallback) {
+    originCallback(requestOrigin, (error, origin) => {
+      if (error || !origin) {
+        return handler(req, res, ...restArgs)
+      }
+      
+      if (origin === '*') {
+        res.setHeader('Access-Control-Allow-Origin', '*')
+      } else if (isString(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin)
+        res.setHeader('Vary', 'Origin')
+      } else {
+        const isAllowed = isOriginAllowed(requestOrigin, origin)
+        if (isAllowed) {
+          res.setHeader('Access-Control-Allow-Origin', requestOrigin)
+        }
+        res.setHeader('Vary', 'Origin')
+      }
+
+      if (allowCredentials) {
+        res.setHeader('Access-Control-Allow-Credentials', 'true')
+      }
+      if (exposeHeaders.length) {
+        res.setHeader('Access-Control-Expose-Headers', exposeHeaders.join(','))
+      }
+
+      const preFlight = req.method === 'OPTIONS'
+      if (preFlight) {
+        res.setHeader('Access-Control-Allow-Methods', allowMethods.join(','))
+        res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(','))
+        res.setHeader('Access-Control-Max-Age', String(maxAge))
+      }
+
+      if (preFlight && !runHandlerOnOptionsRequest) {
+        res.end()
+      } else {
+        return handler(req, res, ...restArgs)
+      }
+    })
+  }
+
+  res.end()
 }
 
 module.exports = cors
