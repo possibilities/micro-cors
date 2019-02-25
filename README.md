@@ -32,7 +32,7 @@ Since the current version of micro-cors only set headers to the response (`res`)
 const { send } = require('micro')
 const cors = require('micro-cors')()
 const handler = (req, res) => {
-  if (req.method !== 'OPTIONS') {
+  if (req.method === 'OPTIONS') {
     return send(res, 200, 'ok!');
   }
 
