@@ -26,6 +26,27 @@ const handler = (req, res) => send(res, 200, 'ok!')
 module.exports = cors(handler)
 ```
 
+Since the current version of micro-cors only sets headers to the response you have do some manual work. Lets say you only want to handle POST request:
+
+```js
+const { send } = require('micro')
+const cors = require('micro-cors')()
+const handler = (req, res) => {
+  if (req.method !== 'OPTIONS') {
+    return send(res, 200, 'ok!');
+  }
+
+  if (req.method !== 'POST') {
+    throw createError(404, 'Not Found');
+  }
+
+  // handle incoming request as usual
+
+}
+
+module.exports = cors(handler)
+```
+
 With options
 
 ```js
