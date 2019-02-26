@@ -26,11 +26,12 @@ const handler = (req, res) => send(res, 200, 'ok!')
 module.exports = cors(handler)
 ```
 
-Since the current version of micro-cors only set headers to the response (`res`) you have do some manual work. Lets say you only want to handle a POST request:
+Since the current version of `micro-cors` only sets headers in the response (`res`), you have do some manual work if you want to avoid triggering your handler on an `OPTIONS` preflight request. Let's say you want to approve preflight requests and otherwise only let POST requests trigger the handler:
 
 ```js
 const { send } = require('micro')
 const cors = require('micro-cors')()
+
 const handler = (req, res) => {
   if (req.method === 'OPTIONS') {
     return send(res, 200, 'ok!');
@@ -41,7 +42,6 @@ const handler = (req, res) => {
   }
 
   // handle incoming request as usual
-
 }
 
 module.exports = cors(handler)
