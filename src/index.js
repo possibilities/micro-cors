@@ -39,7 +39,7 @@ function isOriginAllowed (origin, allowedOrigin) {
   }
 }
 
-const cors = (options = {}) => handler => async (req, res, ...restArgs) => {
+const cors = (options = {}) => handler => (req, res, ...restArgs) => {
   const {
     origin = '*',
     maxAge = DEFAULT_MAX_AGE_SECONDS,
