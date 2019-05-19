@@ -29,14 +29,12 @@ function isOriginAllowed (origin, allowedOrigin) {
         return true
       }
     }
-    return false
   } else if (isString(allowedOrigin)) {
     return origin === allowedOrigin
   } else if (allowedOrigin instanceof RegExp) {
     return allowedOrigin.test(origin)
-  } else {
-    return !!allowedOrigin
   }
+  return false
 }
 
 const cors = (options = {}) => handler => (req, res, ...restArgs) => {
