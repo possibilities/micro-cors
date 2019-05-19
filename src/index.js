@@ -56,57 +56,38 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     return handler(req, res, ...restArgs)
   }
 
-  let originCallback = null
-  if (origin && typeof origin === 'function') {
-    originCallback = origin
-  } else if (origin) {
-    originCallback = (requestOrigin, callback) => {
-      callback(null, origin)
+  if (origin === '*') {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+  } else if (isString(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+    res.setHeader('Vary', 'Origin')
+  } else {
+    const isAllowed = isOriginAllowed(requestOrigin, origin)
+    if (isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', requestOrigin)
     }
+    res.setHeader('Vary', 'Origin')
   }
 
-  if (originCallback) {
-    originCallback(requestOrigin, (error, origin) => {
-      if (error || !origin) {
-        return handler(req, res, ...restArgs)
-      }
-      
-      if (origin === '*') {
-        res.setHeader('Access-Control-Allow-Origin', '*')
-      } else if (isString(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin)
-        res.setHeader('Vary', 'Origin')
-      } else {
-        const isAllowed = isOriginAllowed(requestOrigin, origin)
-        if (isAllowed) {
-          res.setHeader('Access-Control-Allow-Origin', requestOrigin)
-        }
-        res.setHeader('Vary', 'Origin')
-      }
-
-      if (allowCredentials) {
-        res.setHeader('Access-Control-Allow-Credentials', 'true')
-      }
-      if (exposeHeaders.length) {
-        res.setHeader('Access-Control-Expose-Headers', exposeHeaders.join(','))
-      }
-
-      const preFlight = req.method === 'OPTIONS'
-      if (preFlight) {
-        res.setHeader('Access-Control-Allow-Methods', allowMethods.join(','))
-        res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(','))
-        res.setHeader('Access-Control-Max-Age', String(maxAge))
-      }
-
-      if (preFlight && !runHandlerOnOptionsRequest) {
-        res.end()
-      } else {
-        return handler(req, res, ...restArgs)
-      }
-    })
+  if (allowCredentials) {
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+  }
+  if (exposeHeaders.length) {
+    res.setHeader('Access-Control-Expose-Headers', exposeHeaders.join(','))
   }
 
-  res.end()
+  const preFlight = req.method === 'OPTIONS'
+  if (preFlight) {
+    res.setHeader('Access-Control-Allow-Methods', allowMethods.join(','))
+    res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(','))
+    res.setHeader('Access-Control-Max-Age', String(maxAge))
+  }
+
+  if (preFlight && !runHandlerOnOptionsRequest) {
+    res.end()
+  } else {
+    return handler(req, res, ...restArgs)
+  }
 }
 
 module.exports = cors
