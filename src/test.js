@@ -269,7 +269,7 @@ test('allows to run handler on OPTIONS request', async t => {
 })
 
 test('matches request origin against regexp', async t => {
-  const cors = microCors({origin: /example\.com$/})
+  const cors = microCors({ origin: /example\.com$/ })
   const router = micro(cors(() => ({
 
   })))
@@ -285,12 +285,13 @@ test('matches request origin against regexp', async t => {
     const allowOriginHeader =
       response.headers['access-control-allow-origin']
     t.is(allowOriginHeader, testRequestOptions.headers.origin)
+    t.is(response.headers['vary'], 'Origin')
   }
 })
 
 test('matches request origin against array of origin checks', async t => {
   const cors = microCors({
-    origin: [ /foo\.com$/, 'example.com' ]
+    origin: [/foo\.com$/, 'example.com']
   })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -311,7 +312,7 @@ test('matches request origin against array of origin checks', async t => {
 
 test('doesn\'t match request origin against array of invalid origin checks', async t => {
   const cors = microCors({
-    origin: [ /foo\.com$/, 'bar.com' ]
+    origin: [/foo\.com$/, 'bar.com']
   })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
@@ -330,36 +331,8 @@ test('doesn\'t match request origin against array of invalid origin checks', asy
   }
 })
 
-test('origin of false disables cors', async t => {
-  const cors = microCors({
-    origin: false,
-    maxAge: 'foo',
-    allowMethods: ['FOO'],
-    allowHeaders: ['BAR'],
-    allowCredentials: false
-  })
-  const router = micro(cors(() => ({})))
-  const url = await listen(router)
-
-  for (let method of methods) {
-    const response = await request({
-      url,
-      method,
-      ...testRequestOptions
-    })
-
-    t.is(response.headers['access-control-allow-origin'], undefined)
-    t.is(response.headers['Access-Control-Allow-Methods'], undefined)
-    t.is(response.headers['Access-Control-Allow-Headers'], undefined)
-    t.is(response.headers['Access-Control-Allow-Credentials'], undefined)
-    t.is(response.headers['Access-Control-Max-Age'], undefined)
-  }
-})
-
 test('can override origin', async t => {
-  const cors = microCors({
-    origin: 'example.com'
-  })
+  const cors = microCors({ origin: 'example.com' })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
@@ -374,10 +347,8 @@ test('can override origin', async t => {
   }
 })
 
-test('includes Vary header for specific origins', async t => {
-  const cors = microCors({
-    origin: 'example.com'
-  })
+test('does not include Vary header for specific origins', async t => {
+  const cors = microCors({ origin: 'example.com' })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
@@ -388,24 +359,6 @@ test('includes Vary header for specific origins', async t => {
       ...testRequestOptions
     })
 
-    t.is(response.headers['vary'], 'Origin')
-  }
-})
-
-test('specifying true for origin reflects requesting origin', async t => {
-  const cors = microCors({
-    origin: true
-  })
-  const router = micro(cors(() => ({})))
-  const url = await listen(router)
-
-  for (let method of methods) {
-    const response = await request({
-      url,
-      method,
-      ...testRequestOptions
-    })
-
-    t.is(response.headers['access-control-allow-origin'], testRequestOptions.headers.origin)
+    t.is(response.headers['vary'], undefined)
   }
 })

@@ -24,7 +24,7 @@ function isString (s) {
 
 function isOriginAllowed (origin, allowedOrigin) {
   if (Array.isArray(allowedOrigin)) {
-    for (var i = 0; i < allowedOrigin.length; ++i) {
+    for (const i in allowedOrigin) {
       if (isOriginAllowed(origin, allowedOrigin[i])) {
         return true
       }
@@ -48,21 +48,15 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     runHandlerOnOptionsRequest = false
   } = options
 
-  const requestOrigin = req.headers.origin
-
-  if (!requestOrigin) {
+  if (!req.headers.origin) {
     return handler(req, res, ...restArgs)
   }
 
-  if (origin === '*') {
-    res.setHeader('Access-Control-Allow-Origin', '*')
-  } else if (isString(origin)) {
+  if (isString(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin)
-    res.setHeader('Vary', 'Origin')
   } else {
-    const isAllowed = isOriginAllowed(requestOrigin, origin)
-    if (isAllowed) {
-      res.setHeader('Access-Control-Allow-Origin', requestOrigin)
+    if (isOriginAllowed(req.headers.origin, origin)) {
+      res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
     }
     res.setHeader('Vary', 'Origin')
   }
