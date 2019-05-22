@@ -37,7 +37,17 @@ function isOriginAllowed (origin, allowedOrigin) {
   return false
 }
 
-const cors = (options = {}) => handler => (req, res, ...restArgs) => {
+function setVaryHeader (res, origin) {
+  if (!isString(origin)) {
+    if (res.getHeader('Vary')) {
+      res.setHeader('Vary', res.getHeader('Vary') + ',Origin')
+    } else {
+      res.setHeader('Vary', 'Origin')
+    }
+  }
+}
+
+const cors = (options = {}) => handler => async (req, res, ...restArgs) => {
   const {
     origin = '*',
     maxAge = DEFAULT_MAX_AGE_SECONDS,
@@ -58,7 +68,6 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     if (isOriginAllowed(req.headers.origin, origin)) {
       res.setHeader('Access-Control-Allow-Origin', req.headers.origin)
     }
-    res.setHeader('Vary', 'Origin')
   }
 
   if (allowCredentials) {
@@ -76,9 +85,12 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
   }
 
   if (preFlight && !runHandlerOnOptionsRequest) {
+    setVaryHeader(res, origin)
     res.end()
   } else {
-    return handler(req, res, ...restArgs)
+    const handlerResult = await handler(req, res, ...restArgs)
+    setVaryHeader(res, origin)
+    return handlerResult
   }
 }
 

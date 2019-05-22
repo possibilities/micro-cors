@@ -362,3 +362,44 @@ test('does not include Vary header for specific origins', async t => {
     t.is(response.headers['vary'], undefined)
   }
 })
+
+test('include Vary header for dynamic origins', async t => {
+  const cors = microCors({ origin: ['foo.com', 'bar.com'] })
+  const router = micro(cors(() => ({})))
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    t.is(response.headers['vary'], 'Origin')
+  }
+})
+
+test('append Vary header if there is already a value', async t => {
+  const cors = microCors({ origin: ['foo.com', 'bar.com'] })
+  const router = micro(
+    cors((req, res) => {
+      res.setHeader('Vary', 'Foo')
+      return {}
+    })
+  )
+  const url = await listen(router)
+
+  for (let method of methods) {
+    const response = await request({
+      url,
+      method,
+      ...testRequestOptions
+    })
+
+    if (method === 'OPTIONS') {
+      t.is(response.headers['vary'], 'Origin')
+    } else {
+      t.is(response.headers['vary'], 'Foo,Origin')
+    }
+  }
+})
