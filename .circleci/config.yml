@@ -1,0 +1,37 @@
+version: 2
+
+references:
+  defaults: &defaults
+    docker:
+      - image: circleci/node:6.0.0
+    working_directory: ~/micro-cors
+  restore_yarn_cache: &restore_yarn_cache
+    name: Restoring Cache - yarn
+    keys:
+      - comuque-frontend-yarn-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - comuque-frontend-yarn-v1-{{ .Branch }}-
+  save_yarn_cache: &save_yarn_cache
+    key: comuque-frontend-yarn-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    paths:
+      - ~/.cache/yarn
+      - ./node_modules
+
+jobs:
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache: *restore_yarn_cache
+      - run:
+          name: Install dependencies
+          command: yarn
+      - run:
+          name: Tests
+          command: yarn test
+      - save_cache: *save_yarn_cache
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
