@@ -251,7 +251,7 @@ test('responds to OPTIONS requests without running handler', async t => {
 })
 
 test('allows to run handler on OPTIONS request', async t => {
-  const cors = microCors({ runHandlerOnOptionsRequest: true })
+  const cors = microCors({ runHandlerOnPreflightRequest: true })
   let isHandlerCalled = false
   const router = micro(cors((req, res) => {
     isHandlerCalled = true

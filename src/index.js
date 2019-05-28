@@ -55,7 +55,7 @@ const cors = (options = {}) => handler => async (req, res, ...restArgs) => {
     allowHeaders = DEFAULT_ALLOW_HEADERS,
     allowCredentials = true,
     exposeHeaders = [],
-    runHandlerOnOptionsRequest = false
+    runHandlerOnPreflightRequest = false
   } = options
 
   if (!req.headers.origin) {
@@ -84,7 +84,7 @@ const cors = (options = {}) => handler => async (req, res, ...restArgs) => {
     res.setHeader('Access-Control-Max-Age', String(maxAge))
   }
 
-  if (preFlight && !runHandlerOnOptionsRequest) {
+  if (preFlight && !runHandlerOnPreflightRequest) {
     setVaryHeader(res, origin)
     res.end()
   } else {

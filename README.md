@@ -65,6 +65,6 @@ default: `*`
 
 Accepts string, regex, or array of string and/or regex values
 
-##### `runHandlerOnOptionsRequest`
+##### `runHandlerOnPreflightRequest`
 
 default: `false`
