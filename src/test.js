@@ -27,130 +27,127 @@ const methods = [
   'OPTIONS'
 ]
 
-test('adds default max age header only for OPTIONS request', async t => {
+test('adds default access-control-max-age header only for OPTIONS request', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     if (method === 'OPTIONS') {
       const maxAgeHeader = response.headers['access-control-max-age']
-      t.deepEqual(maxAgeHeader, '86400')
+      t.is(maxAgeHeader, '86400')
     } else {
       t.false(Object.keys(response.headers).includes('access-control-max-age'))
     }
   }
 })
 
-test('adds configured max age header', async t => {
+test('adds configured access-control-max-age header', async t => {
   const cors = microCors({ maxAge: 'foo' })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   const maxAgeHeader = response.headers['access-control-max-age']
-  t.deepEqual(maxAgeHeader, 'foo')
+  t.is(maxAgeHeader, 'foo')
 })
 
-test('adds default allow origin header', async t => {
+test('adds default access-control-allow-origin header', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
-    const allowOriginHeader =
-      response.headers['access-control-allow-origin']
-    t.deepEqual(allowOriginHeader, '*')
+    const allowOriginHeader = response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, '*')
   }
 })
 
-test('adds configured allow origin header', async t => {
+test('adds configured access-control-allow-origin header', async t => {
   const cors = microCors({ origin: 'BAZ' })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
-    const allowOriginHeader =
-      response.headers['access-control-allow-origin']
-    t.deepEqual(allowOriginHeader, 'BAZ')
+    const allowOriginHeader = response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, 'BAZ')
   }
 })
 
-test('adds default allow methods header only for OPTIONS request', async t => {
+test('adds default access-control-allow-methods header only for OPTIONS request', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     if (method === 'OPTIONS') {
       const allowMethodsHeader = response.headers['access-control-allow-methods']
-      t.deepEqual(allowMethodsHeader, 'POST,GET,PUT,PATCH,DELETE,OPTIONS')
+      t.is(allowMethodsHeader, 'POST,GET,PUT,PATCH,DELETE,OPTIONS')
     } else {
       t.false(Object.keys(response.headers).includes('access-control-allow-methods'))
     }
   }
 })
 
-test('adds configured allow methods header', async t => {
+test('adds configured access-control-allow-methods header', async t => {
   const cors = microCors({ allowMethods: ['FOO'] })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   const allowMethodsHeader = response.headers['access-control-allow-methods']
-  t.deepEqual(allowMethodsHeader, 'FOO')
+  t.is(allowMethodsHeader, 'FOO')
 })
 
-test('adds default allow headers header only for OPTIONS request', async t => {
+test('adds default access-control-allow-headers header only for OPTIONS request', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     if (method === 'OPTIONS') {
-      const allowMethodsHeader = response.headers['access-control-allow-headers']
-      t.deepEqual(
-        allowMethodsHeader,
+      t.is(
+        response.headers['access-control-allow-headers'],
         'X-Requested-With,Access-Control-Allow-Origin,X-HTTP-Method-Override,Content-Type,Authorization,Accept'
       )
     } else {
@@ -159,79 +156,72 @@ test('adds default allow headers header only for OPTIONS request', async t => {
   }
 })
 
-test('adds configured allow headers header', async t => {
+test('adds configured access-control-allow-headers header', async t => {
   const cors = microCors({ allowHeaders: ['BAR'] })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   const allowMethodsHeader = response.headers['access-control-allow-headers']
-  t.deepEqual(
-    allowMethodsHeader,
-    'BAR'
-  )
+  t.is(allowMethodsHeader, 'BAR')
 })
 
-test('allows configured expose headers header', async t => {
+test('allows configured access-control-expose-headers header', async t => {
   const cors = microCors({ exposeHeaders: ['BAR'] })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     const exposeMethodsHeader = response.headers['access-control-expose-headers']
-    t.deepEqual(
-      exposeMethodsHeader,
-      'BAR'
-    )
+    t.is(exposeMethodsHeader, 'BAR')
   }
 })
 
-test('adds allow credentials header by default', async t => {
+test('adds access-control-allow-credentials header by default', async t => {
   const cors = microCors()
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
-    const allowCredentialsHeader =
-      response.headers['access-control-allow-credentials']
-    t.deepEqual(allowCredentialsHeader, 'true')
+    const allowCredentialsHeader = response.headers['access-control-allow-credentials']
+    t.is(allowCredentialsHeader, 'true')
   }
 })
 
-test('allows remove allow credentials header', async t => {
+test('allows removal of access-control-allow-credentials header', async t => {
   const cors = microCors({ allowCredentials: false })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     t.false(Object.keys(response.headers).includes('access-control-allow-credentials'))
   }
 })
 
-test('responds to OPTIONS requests without running handler', async t => {
+test('does not run handler on preflight request', async t => {
   const cors = microCors()
   let isHandlerCalled = false
   const router = micro(cors((req, res) => {
@@ -241,16 +231,16 @@ test('responds to OPTIONS requests without running handler', async t => {
   const url = await listen(router)
 
   const response = await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   t.is(response.statusCode, 200)
   t.false(isHandlerCalled)
 })
 
-test('allows to run handler on OPTIONS request', async t => {
+test('allows running handler on preflight request', async t => {
   const cors = microCors({ runHandlerOnPreflightRequest: true })
   let isHandlerCalled = false
   const router = micro(cors((req, res) => {
@@ -260,9 +250,9 @@ test('allows to run handler on OPTIONS request', async t => {
   const url = await listen(router)
 
   await request({
+    ...testRequestOptions,
     url,
-    method: 'OPTIONS',
-    ...testRequestOptions
+    method: 'OPTIONS'
   })
 
   t.true(isHandlerCalled)
@@ -270,20 +260,17 @@ test('allows to run handler on OPTIONS request', async t => {
 
 test('matches request origin against regexp', async t => {
   const cors = microCors({ origin: /example\.com$/ })
-  const router = micro(cors(() => ({
-
-  })))
+  const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
-    const allowOriginHeader =
-      response.headers['access-control-allow-origin']
+    const allowOriginHeader = response.headers['access-control-allow-origin']
     t.is(allowOriginHeader, testRequestOptions.headers.origin)
     t.is(response.headers['vary'], 'Origin')
   }
@@ -298,19 +285,18 @@ test('matches request origin against array of origin checks', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
-    const allowOriginHeader =
-      response.headers['access-control-allow-origin']
+    const allowOriginHeader = response.headers['access-control-allow-origin']
     t.is(allowOriginHeader, 'example.com')
     t.is(response.headers['vary'], 'Origin')
   }
 })
 
-test('doesn\'t match request origin against array of invalid origin checks', async t => {
+test('does not match request origin against array of invalid origin checks', async t => {
   const cors = microCors({
     origin: [/foo\.com$/, 'bar.com']
   })
@@ -319,31 +305,31 @@ test('doesn\'t match request origin against array of invalid origin checks', asy
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
-    const allowOriginHeader =
-      response.headers['access-control-allow-origin']
+    const allowOriginHeader = response.headers['access-control-allow-origin']
     t.is(allowOriginHeader, undefined)
     t.is(response.headers['vary'], 'Origin')
   }
 })
 
 test('can override origin', async t => {
-  const cors = microCors({ origin: 'example.com' })
+  const cors = microCors({ origin: 'something-else.com' })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
-    t.is(response.headers['access-control-allow-origin'], testRequestOptions.headers.origin)
+    const allowOriginHeader = response.headers['access-control-allow-origin']
+    t.is(allowOriginHeader, 'something-else.com')
   }
 })
 
@@ -354,32 +340,32 @@ test('does not include Vary header for specific origins', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     t.is(response.headers['vary'], undefined)
   }
 })
 
-test('include Vary header for dynamic origins', async t => {
+test('includes Vary header for dynamic origins', async t => {
   const cors = microCors({ origin: ['foo.com', 'bar.com'] })
   const router = micro(cors(() => ({})))
   const url = await listen(router)
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     t.is(response.headers['vary'], 'Origin')
   }
 })
 
-test('append Vary header if there is already a value', async t => {
+test('appends Vary header if there is already a value', async t => {
   const cors = microCors({ origin: ['foo.com', 'bar.com'] })
   const router = micro(
     cors((req, res) => {
@@ -391,9 +377,9 @@ test('append Vary header if there is already a value', async t => {
 
   for (let method of methods) {
     const response = await request({
+      ...testRequestOptions,
       url,
-      method,
-      ...testRequestOptions
+      method
     })
 
     if (method === 'OPTIONS') {
