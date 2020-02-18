@@ -28,6 +28,10 @@ const cors = (options = {}) => handler => (req, res, ...restArgs) => {
     exposeHeaders = []
   } = options
 
+  if (res && res.finished) {
+    return
+  }
+  
   res.setHeader('Access-Control-Allow-Origin', origin)
   if (allowCredentials) {
     res.setHeader('Access-Control-Allow-Credentials', 'true')
