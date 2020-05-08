@@ -5,8 +5,6 @@ import microCors from './index'
 import micro from 'micro'
 import request from 'request-promise'
 
-import 'babel-polyfill'
-
 const testRequestOptions = {
   json: true,
   // Otherwise request-promise just gives the body
