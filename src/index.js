@@ -88,8 +88,8 @@ const cors = (options = {}) => handler => async (req, res, ...restArgs) => {
     setVaryHeader(res, origin)
     res.end()
   } else {
-    const handlerResult = await handler(req, res, ...restArgs)
     setVaryHeader(res, origin)
+    const handlerResult = await handler(req, res, ...restArgs)
     return handlerResult
   }
 }

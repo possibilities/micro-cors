@@ -5,8 +5,6 @@ import microCors from './index'
 import micro from 'micro'
 import request from 'request-promise'
 
-import 'babel-polyfill'
-
 const testRequestOptions = {
   json: true,
   // Otherwise request-promise just gives the body
@@ -365,11 +363,11 @@ test('includes Vary header for dynamic origins', async t => {
   }
 })
 
-test('appends Vary header if there is already a value', async t => {
+test('append Vary header', async t => {
   const cors = microCors({ origin: ['foo.com', 'bar.com'] })
   const router = micro(
     cors((req, res) => {
-      res.setHeader('Vary', 'Foo')
+      res.setHeader('Vary', res.getHeader('Vary') + ',Foo')
       return {}
     })
   )
@@ -385,7 +383,7 @@ test('appends Vary header if there is already a value', async t => {
     if (method === 'OPTIONS') {
       t.is(response.headers['vary'], 'Origin')
     } else {
-      t.is(response.headers['vary'], 'Foo,Origin')
+      t.is(response.headers['vary'], 'Origin,Foo')
     }
   }
 })
